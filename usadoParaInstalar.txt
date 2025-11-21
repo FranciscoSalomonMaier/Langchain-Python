@@ -1,0 +1,9 @@
+pip install langchain-community
+pip install langchain-openai
+pip install langchain-core
+pip install langchain
+pip install openai
+pip install pypdf
+pip install faiss-cpu
+
+langchain_open 1.0.3
