@@ -1,35 +1,32 @@
 from langchain_openai import ChatOpenAI
 from langchain_core.prompts import PromptTemplate
+from langchain_core.output_parsers import StrOutputParser
 from dotenv import load_dotenv
 import os
 
 load_dotenv()
 api_key = os.getenv("OPENAI_API_KEY")
 
-
-
-numero_dias = 7
-numero_criancas = 2
-atividade = "praia"
-
-modelo_de_prompt = PromptTemplate(
+prompt_cidade = PromptTemplate(
     template =""" 
-    Crie um roteiro de viagem de {dias} dias, 
-    para uma família com {numero_criancas} crianças 
-    que gostam de {atividade}.
-    """
-)
-prompt = modelo_de_prompt.format(
-    dias=numero_dias,
-    numero_criancas=numero_criancas,
-    atividade=atividade
+    Sugira uma cidade dado o meu interesse por {interesse}.    
+    """,
+    input_variables=["interesse"]
 )
 
+
+
+### Poderia crair vários modelos e usar o mesmo prompt para cada um deles, gerando resultados diferentes.
+### Com essa arquitetura, conseguimos dividir prompt e modelo
 modelo = ChatOpenAI(
     model="gpt-3.5-turbo",
     temperature=0.5,
     api_key=api_key,
 )
 
-resposta = modelo.invoke(prompt)
+cadeia = prompt_cidade | modelo | StrOutputParser
+
+resposta = cadeia.invoke({
+    "interesse": "praias"
+})
 print(resposta.content)
