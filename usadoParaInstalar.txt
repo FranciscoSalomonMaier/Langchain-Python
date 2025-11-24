@@ -7,3 +7,6 @@ pip install pypdf
 pip install faiss-cpu
 
 langchain_open 1.0.3
+
+pip install langchain-huggingface
+pip install sentence-transformers

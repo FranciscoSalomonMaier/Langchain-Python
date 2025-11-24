@@ -1,35 +1,26 @@
-from langchain_openai import ChatOpenAI
+from langchain_huggingface import HuggingFaceEndpoint
 from langchain_core.prompts import PromptTemplate
 from dotenv import load_dotenv
 import os
 
-load_dotenv()
-api_key = os.getenv("OPENAI_API_KEY")
+import transformers
+import torch
+model_id = "meta-llama/Meta-Llama-3.1-8B-Instruct"
 
-
-
-numero_dias = 7
-numero_criancas = 2
-atividade = "praia"
-
-modelo_de_prompt = PromptTemplate(
-    template =""" 
-    Crie um roteiro de viagem de {dias} dias, 
-    para uma família com {numero_criancas} crianças 
-    que gostam de {atividade}.
-    """
-)
-prompt = modelo_de_prompt.format(
-    dias=numero_dias,
-    numero_criancas=numero_criancas,
-    atividade=atividade
+pipeline = transformers.pipeline(
+    "text-generation",
+    model=model_id,
+    model_kwargs={"torch_dtype": torch.bfloat16},
+    device_map="auto",
 )
 
-modelo = ChatOpenAI(
-    model="gpt-3.5-turbo",
-    temperature=0.5,
-    api_key=api_key,
-)
+messages = [
+    {"role": "system", "content": "You are a pirate chatbot who always responds in pirate speak!"},
+    {"role": "user", "content": "Who are you?"},
+]
 
-resposta = modelo.invoke(prompt)
-print(resposta.content)
+outputs = pipeline(
+    messages,
+    max_new_tokens=256,
+)
+print(outputs[0]["generated_text"][-1])
