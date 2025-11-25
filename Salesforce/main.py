@@ -11,3 +11,4 @@ def img2text(url):
     print(text)
     return text
 
+img2text("photo.png")
