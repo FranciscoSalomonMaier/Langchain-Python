@@ -26,7 +26,6 @@ prompt_text = prompt_template.format(
     numero_criancas=numero_criancas,
     atividade=atividade
 )
-print(prompt_text)
 messages = [
     {"role": "system", "content": "Você é Qwen, criado por Alibaba Cloud. Você é um assistente bacana e útil."},
     {"role": "user", "content": prompt_text}
@@ -47,3 +46,4 @@ generated_ids = [
 ]
 
 response = tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0]
+print(response)
